@@ -170,7 +170,7 @@ int ProcessInteractive(){
     close(fd[1]);
     
 
-    if((pid3 = fork()) == -1) // fork for 'grep'
+    if((pid3 = fork()) == -1) // fork for 'less'
         return -2; // error code for fork
    
     // child process 'less'
@@ -216,10 +216,10 @@ int ProcessInteractiveAll(){
     }
 
 
-    if((pid2 = fork()) == -1) // fork for 'grep'
+    if((pid2 = fork()) == -1) // fork for 'less'
         return -2; // error code for fork
     
-    // child process "grep"
+    // child process "less"
     if(pid2 ==0){
         dup2(fd[0],STDIN_FILENO); // make stdin of pipe point to stdin of child process
         //close unsed file descriptor
