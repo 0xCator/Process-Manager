@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include "../headers/Process.h"
 int validMenuChoice(int maxChoice)
@@ -100,6 +101,7 @@ void stopProcessMenu()
                 do
                 {
                     fgets(processName, sizeof(processName), stdin);
+                    processName[strlen(processName)  -1] = '\0';
                 } while (processName[0] == '\n');
                 ProcessKillall(processName, 9);
                 waitInput();
@@ -132,7 +134,11 @@ void signalMenu()
     ProcessPrintAll();
     printf("Enter process name: ");
     char processName[256];
-    do {fgets(processName, sizeof(processName), stdin);} while (processName[0] == '\n');
+    do {
+        fgets(processName, sizeof(processName), stdin);
+        processName[strlen(processName) -1 ] = '\0';
+    }
+    while (processName[0] == '\n');
     ProcessKillall(processName, signal);
     waitInput();
     return;
@@ -161,7 +167,10 @@ int main(int argc, char *argv[])
                 system("clear");
                 char processPath[256];
                 printf("Run a process:\nEnter a process' path/name: ");
-                do {fgets(processPath, sizeof(processPath), stdin);}
+                do {
+                    fgets(processPath, sizeof(processPath), stdin);
+                    processPath[strlen(processPath) - 1 ]= '\0';
+                }
                 while (processPath[0] == '\n');
                 ProcessOpen(processPath);
                 waitInput();

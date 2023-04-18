@@ -31,7 +31,17 @@ int ProcessOpen(char * path){
 }
 
 int ProcessPrintAll(){
-    return execlp("ps","ps","aux",NULL);
+    pid_t pid;
+
+    if((pid = fork()) == -1)
+        return -1;
+    //child process
+    if(pid == 0){
+      execlp("ps","ps","aux",NULL);
+    }
+    waitpid(pid, NULL,0);
+    return 0;
+
 }
 int ProcessPrint(){
     if(pipe(fd) == -1) // create pipe
@@ -93,16 +103,24 @@ int ProcessKill(int pid, int sigNO){
  
 }
 int ProcessKillall(char * name , int sigNO){
-    char tmp[2];
-    char sig[3] = "-";
-    int i =0;
-    while(sigNO != 0){
-        int rem =sigNO % 10;
-        tmp[i++] = (rem > 9) ? (rem - 10) + 'a' : rem +'0';
-        sigNO/= 10;
+    pid_t pid;
+    if((pid = fork()) == -1)
+        return -1;
+    //child process
+    if(pid == 0){
+        char tmp[2];
+        char sig[3] = "-";
+        int i =0;
+        while(sigNO != 0){
+            int rem =sigNO % 10;
+            tmp[i++] = (rem > 9) ? (rem - 10) + 'a' : rem +'0';
+            sigNO/= 10;
+        }
+        strcat(sig,tmp);
+        execlp("killall","killall",sig,name,NULL);
     }
-    strcat(sig,tmp);
-    return execlp("killall","killall",sig,name,NULL);
+    waitpid(pid, NULL,0);
+    return 0;
 }
 int ProcessInteractive(){
 
