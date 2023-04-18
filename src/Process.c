@@ -14,6 +14,20 @@ int fd[2];
 // -- fd[0] read
 // -- fd[1] write
 
+
+
+int ProcessOpen(char * path){
+    pid_t pid;
+    if((pid = fork()) == -1)
+        return -1;
+    //child process
+    if(pid == 0){
+      execlp(path,path,NULL);
+      exit(0);
+    }
+    return 0;
+}
+
 int ProcessPrintAll(){
     return execlp("ps","ps","aux",NULL);
 }
@@ -86,4 +100,11 @@ int ProcessKillall(char * name , int sigNO){
     }
     strcat(sig,tmp);
     return execlp("killall","killall",sig,name,NULL);
+}
+
+
+int main(int argc, char *argv[])
+{
+    ProcessOpen("xlogo");
+    return 0;
 }
