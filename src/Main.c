@@ -66,10 +66,12 @@ void printMainMenu()
     printf("Process Manager\nSelect an option:\n");
     printf("1- List all system processes\n");
     printf("2- List user processes\n");
-    printf("3- Run a process\n");
-    printf("4- Stop a process\n");
-    printf("5- Send a signal to a process\n");
-    printf("6- Exit\n");
+    printf("3- List all system processes (Interactive)\n");
+    printf("4- List user processes (Interactive)\n");
+    printf("5- Run a process\n");
+    printf("6- Stop a process\n");
+    printf("7- Send a signal to a process\n");
+    printf("8- Exit\n");
 }
 
 void stopProcessMenu()
@@ -149,7 +151,7 @@ int main(int argc, char *argv[])
     while (1)
     {
         printMainMenu();
-        switch(validMenuChoice(6)) 
+        switch(validMenuChoice(8)) 
         {
             case 1: //List all system processes
                 system("clear");
@@ -163,7 +165,17 @@ int main(int argc, char *argv[])
                 ProcessPrint();
                 waitInput();
             break;
-            case 3: //Run a process
+            case 3: //List all system processes (Interactive)
+                system("clear");
+                printf("All system processes: \n");
+                ProcessInteractiveAll();
+            break;
+            case 4: //List user processes (Interactive)
+                system("clear");
+                printf("User processes: \n");
+                ProcessInteractive();
+            break;
+            case 5: //Run a process
                 system("clear");
                 char processPath[256];
                 printf("Run a process:\nEnter a process' path/name: ");
@@ -175,13 +187,13 @@ int main(int argc, char *argv[])
                 ProcessOpen(processPath);
                 waitInput();
             break;
-            case 4: //Stop a process
+            case 6: //Stop a process
                 stopProcessMenu();
             break;
-            case 5: //Send a signal to a process
+            case 7: //Send a signal to a process
                 signalMenu();
             break;
-            case 6: //Exit
+            case 8: //Exit
                 return 0;
             break;
             case 0:
