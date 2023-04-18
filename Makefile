@@ -4,7 +4,7 @@ CODEDRIVE=./src
 HEADERS=./headers/
 
 
-CC=gccl
+CC=gcc
 
 DEPFLAGS=-MP -MD
 
