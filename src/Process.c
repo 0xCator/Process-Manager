@@ -14,6 +14,9 @@ int fd[2];
 // -- fd[0] read
 // -- fd[1] write
 
+int ProcessPrintAll(){
+    return execlp("ps","ps","aux",NULL);
+}
 int ProcessPrint(){
     if(pipe(fd) == -1) // create pipe
         return -1; // error code for broken  pipe 
