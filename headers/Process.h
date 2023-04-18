@@ -7,5 +7,7 @@ int ProcessPrint();
 int PrintSignals();
 int ProcessKill(int pid, int sigNO);
 int ProcessKillall(char * name , int sigNO);
+int ProcessInteractive();
+int ProcessInteractiveAll();
 
 #endif  

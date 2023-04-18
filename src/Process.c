@@ -10,7 +10,9 @@
 
 pid_t pid1;
 pid_t pid2;
+pid_t pid3;
 int fd[2];
+int fd1[2];
 // -- fd[0] read
 // -- fd[1] write
 
@@ -59,7 +61,8 @@ int ProcessPrint(){
         //close unsed file descriptor
         close(fd[0]);
         close(fd[1]);
-        const char * user = getenv("USER"); // get user name 
+        int uid = getuid(); // get effictive id
+        const char *user = (uid == 0) ? "root" : getenv("USER"); // get user name  
         execlp("grep","grep","--color=none",user,NULL);
     }
 
@@ -100,4 +103,121 @@ int ProcessKillall(char * name , int sigNO){
     }
     strcat(sig,tmp);
     return execlp("killall","killall",sig,name,NULL);
+}
+int ProcessInteractive(){
+
+    if(pipe(fd) == -1) // create pipe
+        return -1; // error code for broken  pipe 
+    
+    if(pipe(fd1) == -1) // create pipe
+        return -1; // error code for broken  pipe 
+    
+    if((pid1 = fork()) == -1) // fork for 'ps'
+        return -2; // error code for fork 
+    
+    // child process 'ps'
+    if (pid1 == 0) {
+        dup2(fd[1], STDOUT_FILENO); // make stdout of pipe point to stdout of child process
+        
+        // close unused file descriptor
+        close(fd[1]);
+        close(fd[0]);
+
+        execlp("ps","ps","axo","fname,pid,user",NULL);
+
+    }
+
+
+    if((pid2 = fork()) == -1) // fork for 'grep'
+        return -2; // error code for fork
+    
+    // child process "grep"
+    if(pid2 ==0){
+        dup2(fd[0], STDIN_FILENO); // make stdin of pipe point to stdin of child process
+        dup2(fd1[1], STDOUT_FILENO);
+        //close unsed file descriptor
+        close(fd[0]);
+        close(fd[1]);
+        close(fd1[0]);
+        close(fd1[1]);
+        
+        int uid = getuid(); // get effictive id 
+        const char *user = (uid == 0) ? "root" : getenv("USER"); // get user name 
+        execlp("grep","grep","--color=none",user,NULL);
+    }
+
+    // close file descriptor of parent process
+    // to privint chiled  process to read from parent
+    close(fd[0]);
+    close(fd[1]);
+    
+
+    if((pid3 = fork()) == -1) // fork for 'grep'
+        return -2; // error code for fork
+   
+    // child process 'less'
+    if(pid3 == 0){
+        dup2(fd1[0], STDIN_FILENO); // make stdin of pipe point to stdin of child process
+        
+        //close unsed file descriptor
+        close(fd1[0]);
+        close(fd1[1]);
+        
+        execlp("less", "less",NULL);
+    }
+
+
+    // close file descriptor of parent process
+    // to privint chiled  process to read from parent
+    close(fd1[0]);
+    close(fd1[1]);
+    //wait untill process to finish
+    waitpid(pid1,NULL,0);
+    waitpid(pid2,NULL,0);
+    waitpid(pid3,NULL,0);
+
+   return 0; // success code 
+}
+int ProcessInteractiveAll(){
+
+    if(pipe(fd) == -1) // create pipe
+        return -1; // error code for broken  pipe 
+    if((pid1 = fork()) == -1) // fork for 'ps'
+        return -2; // error code for fork 
+    
+    // child process 'ps'
+    if (pid1 == 0) {
+        dup2(fd[1], STDOUT_FILENO); // make stdout of pipe point to stdout of child process
+        
+        // close unused file descriptor
+        close(fd[1]);
+        close(fd[0]);
+
+        execlp("ps","ps","aux",NULL);
+
+    }
+
+
+    if((pid2 = fork()) == -1) // fork for 'grep'
+        return -2; // error code for fork
+    
+    // child process "grep"
+    if(pid2 ==0){
+        dup2(fd[0],STDIN_FILENO); // make stdin of pipe point to stdin of child process
+        //close unsed file descriptor
+        close(fd[0]);
+        close(fd[1]);
+        execlp("less","less",NULL);
+    }
+
+    // close file descriptor of parent process
+    // to privint chiled  process to read from parent
+    close(fd[0]);
+    close(fd[1]);
+    
+    //wait untill process to finish
+    waitpid(pid1,NULL,0);
+    waitpid(pid2,NULL,0);
+
+   return 0; // success code 
 }
