@@ -4,7 +4,7 @@ CODEDRIVE=./src
 HEADERS=./headers/
 
 
-CC=gcc
+CC=gccl
 
 DEPFLAGS=-MP -MD
 
@@ -19,12 +19,18 @@ test:$(TEST)
 
 install: $(BINARY)
 	sudo mv $(BINARY) /bin/$(BINARY)
+	sudo cp ./files/SysMonitor.7 /usr/share/man/man7
+	sudo mandb
 
 $(BINARY) $(TEST): $(OBJECTS)
 	$(CC) -o $@ $^
 
-%.o: %.c
+%.o: %.cr
 	$(CC) $(CFLAGS) -c -o $@ $^
 
 clean:
 	rm -rf $(BINARY) $(OBJECTS) $(DEPFILES) $(TEST)
+
+uninstall:
+	sudo rm -f /bin/SysMonitor  
+	sudo rm -f /usr/share/man/man7/SysMonitor.7 
