@@ -101,10 +101,3 @@ int ProcessKillall(char * name , int sigNO){
     strcat(sig,tmp);
     return execlp("killall","killall",sig,name,NULL);
 }
-
-
-int main(int argc, char *argv[])
-{
-    ProcessOpen("xlogo");
-    return 0;
-}
