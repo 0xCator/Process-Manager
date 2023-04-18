@@ -1,6 +1,7 @@
 #ifndef PROCESS_H
 #define PROCESS_H
 
+int ProcessOpen(char * path);
 int ProcessPrintAll();
 int ProcessPrint();
 int PrintSignals();
