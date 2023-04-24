@@ -103,6 +103,7 @@ void stopProcessMenu()
                 do
                 {
                     fgets(processName, sizeof(processName), stdin);
+                    if(processName[0] == '\n') continue;
                     processName[strlen(processName)  -1] = '\0';
                 } while (processName[0] == '\n');
                 ProcessKillall(processName, 9);
@@ -138,6 +139,7 @@ void signalMenu()
     char processName[256];
     do {
         fgets(processName, sizeof(processName), stdin);
+        if(processName[0] == '\n') continue;
         processName[strlen(processName) -1 ] = '\0';
     }
     while (processName[0] == '\n');
@@ -181,6 +183,7 @@ int main(int argc, char *argv[])
                 printf("Run a process:\nEnter a process' path/name: ");
                 do {
                     fgets(processPath, sizeof(processPath), stdin);
+                    if(processPath[0] == '\n') continue;
                     processPath[strlen(processPath) - 1 ]= '\0';
                 }
                 while (processPath[0] == '\n');
