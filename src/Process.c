@@ -177,10 +177,10 @@ int ProcessInteractive(){
     close(fd[1]);
     
 
-    if((pid3 = fork()) == -1) // fork for 'less'
+    if((pid3 = fork()) == -1) // fork for 'batcat'
         return -2; // error code for fork
    
-    // child process 'less'
+    // child process 'batcat'
     if(pid3 == 0){
         dup2(fd1[0], STDIN_FILENO); // make stdin of pipe point to stdin of child process
         
@@ -188,7 +188,7 @@ int ProcessInteractive(){
         close(fd1[0]);
         close(fd1[1]);
         
-        execlp("less", "less",NULL);
+        execlp("batcat", "batcat",NULL);
     }
 
 
@@ -223,16 +223,16 @@ int ProcessInteractiveAll(){
     }
 
 
-    if((pid2 = fork()) == -1) // fork for 'less'
+    if((pid2 = fork()) == -1) // fork for 'batcat'
         return -2; // error code for fork
     
-    // child process "less"
+    // child process "batcat"
     if(pid2 ==0){
         dup2(fd[0],STDIN_FILENO); // make stdin of pipe point to stdin of child process
         //close unsed file descriptor
         close(fd[0]);
         close(fd[1]);
-        execlp("less","less",NULL);
+        execlp("batcat","batcat",NULL);
     }
 
     // close file descriptor of parent process

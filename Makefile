@@ -5,6 +5,7 @@ HEADERS=./headers/
 
 
 CC=gcc
+PM=apt install
 
 DEPFLAGS=-MP -MD
 
@@ -16,11 +17,12 @@ CFILES=$(foreach I,$(CODEDRIVE),$(wildcard $(I)/*.c))
 OBJECTS=$(patsubst %.c,%.o,$(CFILES))
 
 test:$(TEST)
-
+	sudo $(PM) bat
 install: $(BINARY)
 	sudo mv $(BINARY) /bin/$(BINARY)
 	sudo cp ./files/SysMonitor.7 /usr/share/man/man7
 	sudo mandb
+	sudo $(PM) bat
 
 $(BINARY) $(TEST): $(OBJECTS)
 	$(CC) -o $@ $^
